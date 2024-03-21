@@ -6,12 +6,17 @@ import {
   MaxLength,
   MinLength,
 } from 'class-validator';
+import { ApiProperty } from '@nestjs/swagger';
 
 export class DeleteUserDto {
   @Expose()
   @IsDefined()
   @IsEmail()
   @MaxLength(100)
+  @ApiProperty({
+    example: 'matteo@gmail.com',
+    description: 'The email of the user',
+  })
   email: string;
 
   @Expose()
@@ -20,5 +25,9 @@ export class DeleteUserDto {
   @IsString()
   @MinLength(8)
   @MaxLength(100)
+  @ApiProperty({
+    example: '$password$',
+    description: 'The password of the user',
+  })
   password: string;
 }
