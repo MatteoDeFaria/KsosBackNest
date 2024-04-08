@@ -1,4 +1,4 @@
-import { Body, Controller, Post, Delete } from '@nestjs/common';
+import { Body, Controller, Post, Delete, Get, Param } from '@nestjs/common';
 import {
   ApiCreatedResponse,
   ApiOperation,
@@ -12,7 +12,7 @@ import { UserService } from './user.service';
 import { User } from './entities/user.entity';
 
 @ApiTags('User')
-@Controller('user')
+@Controller('/user')
 export class UserController {
   constructor(private userService: UserService) {}
 
@@ -47,5 +47,17 @@ export class UserController {
   })
   deleteUser(@Body() deleteUserDto: DeleteUserDto) {
     return this.userService.deleteUser(deleteUserDto);
+  }
+
+  @Get('/email/:email')
+  @ApiOperation({ summary: 'Get user' })
+  @ApiResponse({ status: 403, description: 'Forbidden' })
+  @ApiCreatedResponse({
+    description: 'User retrieved',
+    type: User,
+  })
+  getUser(@Param('email') userEmail: string) {
+    console.log('pute');
+    return this.userService.getUser(userEmail);
   }
 }
