@@ -57,7 +57,6 @@ export class UserController {
     type: User,
   })
   getUser(@Param('email') userEmail: string) {
-    console.log('pute');
     return this.userService.getUser(userEmail);
   }
 }
