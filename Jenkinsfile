@@ -4,7 +4,7 @@ pipeline {
 
     environment {
         registryCredential = 'docker-hub-credentials'
-        REGISTRY = 'tekmatteo/ksos-back'
+        registry = 'tekmatteo/ksos-back'
         CONTAINER_NAME = 'KsosBack'
         HASH = credentials('hash')
         DATABASE_URL = credentials('database-url')
@@ -14,7 +14,7 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-                    dockerImage = docker.build REGISTRY + ":$BUILD_NUMBER"
+                    dockerImage = docker.build registry + ":$BUILD_NUMBER"
                 }
             }
         }
@@ -32,8 +32,8 @@ pipeline {
 
         stage('Clean up Docker Image') {
             steps {
-                sh "docker rmi $REGISTRY:$BUILD_NUMBER"
-                sh "docker rmi $REGISTRY:latest"
+                sh "docker rmi $registry:$BUILD_NUMBER"
+                sh "docker rmi $registry:latest"
             }
         }
 
@@ -43,7 +43,7 @@ pipeline {
             steps {
                 script {
                     oldContainerId = sh(script: "docker ps -q -f name=$CONTAINER_NAME", returnStdout: true)
-                    oldImageId = sh(script: "docker images -qf reference=$REGISTRY:latest", returnStdout: true)
+                    oldImageId = sh(script: "docker images -qf reference=$registry:latest", returnStdout: true)
 
                     if (oldContainerId != '') {
                         sh "docker stop $CONTAINER_NAME"
@@ -53,7 +53,7 @@ pipeline {
                     }
 
                     if (oldImageId != '') {
-                        sh "docker rmi $REGISTRY:latest"
+                        sh "docker rmi $registry:latest"
                     } else {
                         echo "No image to delete..."
                     }
@@ -65,7 +65,7 @@ pipeline {
             agent { node { label 'pi5' } }
 
             steps {
-                sh "docker run --name $CONTAINER_NAME --restart always --env DATABASE_URL=$DATABASE_URL --env HASH=$HASH -p 3000:3000 -d $REGISTRY:latest"
+                sh "docker run --name $CONTAINER_NAME --restart always --env DATABASE_URL=$DATABASE_URL --env HASH=$HASH -p 3000:3000 -d $registry:latest"
             }
         }
     }
