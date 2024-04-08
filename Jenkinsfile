@@ -1,3 +1,4 @@
+#!/usr/bin/env/ groovy
 pipeline {
     agent any
 
@@ -13,7 +14,7 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-                    dockerImage = docker.build registry + ":$BUILD_NUMBER"
+                    dockerImage = docker.build REGISTRY + ":$BUILD_NUMBER"
                 }
             }
         }
