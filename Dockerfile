@@ -1,4 +1,4 @@
-FROM node:20.10.0-alpine3.18
+FROM node:20.10.0-alpine3.18 as builder
 
 WORKDIR /app
 
@@ -8,8 +8,12 @@ RUN yarn install
 
 RUN yarn run build
 
-RUN yarn prisma generate
+FROM node:20.10.0-alpine3.18
+
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/package*.json ./
+COPY --from=builder /app/dist ./dist
 
 EXPOSE 3000
 
-CMD ["yarn", "primsa", "migrate", "deploy", "&&" ,"yarn", "run", "start"]
+CMD ["yarn", "run", "start:prod"]
