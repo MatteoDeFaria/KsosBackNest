@@ -8,6 +8,8 @@ RUN yarn install
 
 RUN yarn run build
 
+RUN yarn prisma generate
+
 EXPOSE 3000
 
-CMD ["yarn", "primsa", "generate", "&&" ,"yarn", "run", "start"]
+CMD ["yarn", "primsa", "migrate", "deploy", "&&" ,"yarn", "run", "start"]
