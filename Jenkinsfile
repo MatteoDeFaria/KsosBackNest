@@ -42,7 +42,7 @@ pipeline {
 
             steps {
                 script {
-                    oldContainerId = sh(script: "docker ps -q -f name=$CONTAINER_NAME", returnStdout: true)
+                    oldContainerId = sh(script: "docker ps -a -q -f name=$CONTAINER_NAME", returnStdout: true)
                     oldImageId = sh(script: "docker images -qf reference=$REGISTRY:latest", returnStdout: true)
 
                     if (oldContainerId != '') {
