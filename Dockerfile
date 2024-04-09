@@ -2,9 +2,16 @@ FROM node:20.10.0-alpine3.18 as builder
 
 WORKDIR /app
 
-COPY . /app
+COPY nest-cli.json ./
+COPY package*.json ./
+COPY tsconfig.json ./
+COPY tsconfig.build.json ./
+COPY yarn.lock ./
+COPY prisma ./prisma
 
 RUN yarn install
+
+COPY . .
 
 RUN yarn run build
 
