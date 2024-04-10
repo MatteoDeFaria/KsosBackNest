@@ -8,11 +8,11 @@ import { UserEntity } from './entities/user.entity';
 
 @Injectable()
 export class UserService {
-  private salt: string = process.env.HASH;
+  private saltRound: string = process.env.SALT_ROUND;
   constructor(private prisma: PrismaService) {}
 
   private async cryptPassword(password: string): Promise<string> {
-    return await hash(password, this.salt);
+    return await hash(password, Number(this.saltRound));
   }
 
   async createUser(data: Prisma.UserCreateInput): Promise<UserEntity> {
