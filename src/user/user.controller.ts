@@ -9,7 +9,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { LoginUserDto } from './dto/login-user.dto';
 import { DeleteUserDto } from './dto/delete-user.dto';
 import { UserService } from './user.service';
-import { User } from './entities/user.entity';
+import { UserEntity } from './entities/user.entity';
 
 @ApiTags('User')
 @Controller('/user')
@@ -21,7 +21,7 @@ export class UserController {
   @ApiResponse({ status: 403, description: 'Forbidden' })
   @ApiCreatedResponse({
     description: 'User created',
-    type: User,
+    type: UserEntity,
   })
   createUser(@Body() createUserDto: CreateUserDto) {
     return this.userService.createUser(createUserDto);
@@ -32,7 +32,7 @@ export class UserController {
   @ApiResponse({ status: 403, description: 'Forbidden' })
   @ApiCreatedResponse({
     description: 'User logged',
-    type: User,
+    type: UserEntity,
   })
   loginUser(@Body() loginUserDto: LoginUserDto) {
     return this.userService.loginUser(loginUserDto);
@@ -43,7 +43,7 @@ export class UserController {
   @ApiResponse({ status: 403, description: 'Forbidden' })
   @ApiCreatedResponse({
     description: 'User deleted',
-    type: User,
+    type: UserEntity,
   })
   deleteUser(@Body() deleteUserDto: DeleteUserDto) {
     return this.userService.deleteUser(deleteUserDto);
@@ -54,7 +54,7 @@ export class UserController {
   @ApiResponse({ status: 403, description: 'Forbidden' })
   @ApiCreatedResponse({
     description: 'User retrieved',
-    type: User,
+    type: UserEntity,
   })
   getUser(@Param('email') userEmail: string) {
     return this.userService.getUser(userEmail);
