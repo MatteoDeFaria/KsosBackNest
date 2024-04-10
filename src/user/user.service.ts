@@ -1,9 +1,10 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma.service';
-import { Prisma, User } from '@prisma/client';
+import { Prisma } from '@prisma/client';
 import { compare, hash } from 'bcrypt';
 import { LoginUserDto } from './dto/login-user.dto';
 import { DeleteUserDto } from './dto/delete-user.dto';
+import { UserEntity } from './entities/user.entity';
 
 @Injectable()
 export class UserService {
@@ -14,9 +15,9 @@ export class UserService {
     return await hash(password, this.salt);
   }
 
-  async createUser(data: Prisma.UserCreateInput): Promise<User> {
+  async createUser(data: Prisma.UserCreateInput): Promise<UserEntity> {
     data.password = await this.cryptPassword(data.password);
-    return await this.prisma.user.create({ data });
+    return new UserEntity(await this.prisma.user.create({ data }));
   }
 
   async loginUser(data: LoginUserDto): Promise<string> {
@@ -37,7 +38,7 @@ export class UserService {
     return user.id;
   }
 
-  async deleteUser(data: DeleteUserDto): Promise<User> {
+  async deleteUser(data: DeleteUserDto): Promise<UserEntity> {
     const user = await this.prisma.user.findUniqueOrThrow({
       where: {
         email: data.email,
@@ -52,20 +53,22 @@ export class UserService {
     if (!areEqual)
       throw new HttpException('invalid_credentials', HttpStatus.UNAUTHORIZED);
 
-    return await this.prisma.user.delete({
-      where: {
-        email: data.email,
-      },
-    });
+    return new UserEntity(
+      await this.prisma.user.delete({
+        where: {
+          email: data.email,
+        },
+      }),
+    );
   }
 
-  async getUser(userEmail: string): Promise<User> {
+  async getUser(userEmail: string): Promise<UserEntity> {
     const user = await this.prisma.user.findUniqueOrThrow({
       where: {
         email: userEmail,
       },
     });
 
-    return user;
+    return new UserEntity(user);
   }
 }
