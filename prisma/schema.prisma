@@ -11,12 +11,49 @@ datasource db {
 }
 
 model User {
-  id String @id @default(uuid())
+  id        String @id @default(uuid())
 
-  email    String @unique
-  username String @unique
-  password String
+  email     String @unique
+  username  String @unique
+  password  String
 
   createdAt DateTime @default(now())
   updateAt  DateTime @updatedAt
+}
+
+
+model LeagueOfLegend {
+  id            Int @id @default(autoincrement())
+
+  leagueUser    LeagueUser @relation(fields: [summonerId], references: [id])
+  leagueId      String @unique
+  queueType     String
+  tier          String
+  rank          String
+  summonerId    String
+  leaguePoints  Int
+  wins          Int
+  losses        Int
+  veteran       Boolean
+  inactive      Boolean
+  freshBlood    Boolean
+  hotStreak     Boolean
+
+  createdAt     DateTime @default(now())
+  updateAt      DateTime @updatedAt
+}
+
+model LeagueUser {
+  id            String @id @unique
+  accountId     String
+  puuid         String @unique
+  profileIconId Int
+  revisionDate  BigInt
+  summonerLevel BigInt
+  gameName      String
+  tagLine       String
+  ranked        LeagueOfLegend[]
+
+  createdAt     DateTime @default(now())
+  updateAt      DateTime @updatedAt
 }
