@@ -1,4 +1,4 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post } from '@nestjs/common';
 import {
   ApiCreatedResponse,
   ApiOperation,
@@ -21,5 +21,12 @@ export class LolController {
   })
   createUser(@Body() createUserDto: CreateUserDto) {
     return this.lolService.createUser(createUserDto);
+  }
+
+  @Get('/leaderboard')
+  @ApiOperation({ summary: 'Get lol leaderboard' })
+  @ApiResponse({ status: 403, description: 'Forbidden' })
+  getLeeaderboard() {
+    return this.lolService.getLeaderboard();
   }
 }

@@ -5,6 +5,27 @@ import { AxiosError } from 'axios';
 import { PrismaService } from 'src/prisma.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { LeagueUserEntity } from './entities/league-user.entity';
+import { LeagueOfLegendEntity } from './entities/league-of-legends.entity';
+
+enum RANK {
+  'IRON',
+  'BRONZE',
+  'SILVER',
+  'GOLD',
+  'PLATINUM',
+  'EMERALD',
+  'DIAMOND',
+  'MASTER',
+  'GRANDMASTER',
+  'CHALLENGER',
+}
+
+enum PALIER {
+  'IV',
+  'III',
+  'II',
+  'I',
+}
 
 @Injectable()
 export class LolService {
@@ -56,5 +77,38 @@ export class LolService {
         },
       }),
     );
+  }
+
+  async getLeaderboard(): Promise<LeagueOfLegendEntity[]> {
+    const allLeagueUser = await this.prisma.leagueUser.findMany({
+      include: {
+        ranked: true,
+      },
+    });
+
+    const tabLeagueRanked: LeagueOfLegendEntity[] = [];
+
+    allLeagueUser.forEach((element) => {
+      element.ranked.forEach((elem) => {
+        if (elem.queueType === 'RANKED_SOLO_5x5') {
+          const newLeagueOfLegends: LeagueOfLegendEntity = elem;
+
+          newLeagueOfLegends.gameName = element.gameName;
+          newLeagueOfLegends.tagLine = element.tagLine;
+          tabLeagueRanked.push(new LeagueOfLegendEntity(newLeagueOfLegends));
+        }
+      });
+    });
+
+    tabLeagueRanked.sort((a, b) => {
+      if (RANK[a.tier] !== RANK[b.tier]) return RANK[a.tier] - RANK[b.tier];
+      if (PALIER[a.rank] !== PALIER[b.rank])
+        return PALIER[a.rank] - PALIER[b.rank];
+      if (a.leaguePoints !== b.leaguePoints)
+        return a.leaguePoints - b.leaguePoints;
+    });
+
+    tabLeagueRanked.reverse();
+    return tabLeagueRanked;
   }
 }
