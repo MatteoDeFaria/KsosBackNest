@@ -16,7 +16,7 @@ export class TasksService {
   private readonly logger = new Logger(TasksService.name);
 
   @Cron('0 * * * *')
-  async getLeaderboard() {
+  async getDataRanked() {
     const users: Prisma.LeagueUserCreateInput[] =
       await this.prisma.leagueUser.findMany();
 
@@ -46,6 +46,8 @@ export class TasksService {
       });
     });
 
-    this.logger.debug('Called when the minute is 0');
+    this.logger.debug(
+      `Called when the minute is 0 or if it's called by getLeaderboard`,
+    );
   }
 }
