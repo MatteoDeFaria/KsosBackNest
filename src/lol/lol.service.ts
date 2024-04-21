@@ -3,7 +3,6 @@ import { Injectable, Logger } from '@nestjs/common';
 import { catchError, firstValueFrom } from 'rxjs';
 import { AxiosError } from 'axios';
 import { PrismaService } from 'src/prisma.service';
-import { TasksService } from 'src/tasks/tasks.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { LeagueUserEntity } from './entities/league-user.entity';
 import { LeagueOfLegendEntity } from './entities/league-of-legends.entity';
@@ -33,7 +32,6 @@ export class LolService {
   constructor(
     private readonly httpService: HttpService,
     private prisma: PrismaService,
-    private tasks: TasksService,
   ) {}
 
   private readonly logger = new Logger(LolService.name);
@@ -82,8 +80,6 @@ export class LolService {
   }
 
   async getLeaderboard(): Promise<LeagueOfLegendEntity[]> {
-    await this.tasks.getDataRanked();
-
     const allLeagueUser = await this.prisma.leagueUser.findMany({
       include: {
         ranked: true,
