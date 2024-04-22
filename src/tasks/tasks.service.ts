@@ -41,6 +41,7 @@ export class TasksService {
           update: elem,
           where: {
             leagueId: elem.leagueId,
+            queueType: elem.queueType,
           },
         });
       });
