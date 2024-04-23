@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import {
   ApiCreatedResponse,
   ApiOperation,
@@ -23,10 +23,10 @@ export class LolController {
     return this.lolService.createUser(createUserDto);
   }
 
-  @Get('/leaderboard')
+  @Get('/leaderboard/:queueType')
   @ApiOperation({ summary: 'Get lol leaderboard' })
   @ApiResponse({ status: 403, description: 'Forbidden' })
-  getLeeaderboard() {
-    return this.lolService.getLeaderboard();
+  getLeaderboard(@Param('queueType') queueType: string) {
+    return this.lolService.getLeaderboard(queueType);
   }
 }

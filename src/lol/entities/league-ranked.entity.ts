@@ -1,14 +1,17 @@
 //import { ApiProperty } from '@nestjs/swagger';
-import { LeagueOfLegend } from '@prisma/client';
+import { RankedSolo } from '@prisma/client';
 import { Exclude } from 'class-transformer';
 
-export class LeagueOfLegendEntity implements LeagueOfLegend {
-  constructor(partial: Partial<LeagueOfLegendEntity>) {
+export class RankedEntity implements RankedSolo {
+  constructor(partial: Partial<RankedEntity>) {
     Object.assign(this, partial);
   }
 
   @Exclude()
   id: number;
+
+  @Exclude()
+  summonerId: string;
 
   leagueId: string;
 
@@ -17,9 +20,6 @@ export class LeagueOfLegendEntity implements LeagueOfLegend {
   tier: string;
 
   rank: string;
-
-  @Exclude()
-  summonerId: string;
 
   leaguePoints: number;
 

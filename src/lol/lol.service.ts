@@ -5,7 +5,7 @@ import { AxiosError } from 'axios';
 import { PrismaService } from 'src/prisma.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { LeagueUserEntity } from './entities/league-user.entity';
-import { LeagueOfLegendEntity } from './entities/league-of-legends.entity';
+import { RankedEntity } from './entities/league-ranked.entity';
 
 enum RANK {
   'IRON',
@@ -79,25 +79,30 @@ export class LolService {
     );
   }
 
-  async getLeaderboard(): Promise<LeagueOfLegendEntity[]> {
+  async getLeaderboard(queueType: string): Promise<RankedEntity[]> {
     const allLeagueUser = await this.prisma.leagueUser.findMany({
       include: {
-        ranked: true,
+        RankedFlex: true,
+        RankedSolo: true,
       },
     });
 
-    const tabLeagueRanked: LeagueOfLegendEntity[] = [];
+    const tabLeagueRanked: RankedEntity[] = [];
 
     allLeagueUser.forEach((element) => {
-      element.ranked.forEach((elem) => {
-        if (elem.queueType === 'RANKED_SOLO_5x5') {
-          const newLeagueOfLegends: LeagueOfLegendEntity = elem;
+      if (queueType === 'RANKED_SOLO_5x5') {
+        const newLeagueOfLegends: RankedEntity = element.RankedSolo;
 
-          newLeagueOfLegends.gameName = element.gameName;
-          newLeagueOfLegends.tagLine = element.tagLine;
-          tabLeagueRanked.push(new LeagueOfLegendEntity(newLeagueOfLegends));
-        }
-      });
+        newLeagueOfLegends.gameName = element.gameName;
+        newLeagueOfLegends.tagLine = element.tagLine;
+        tabLeagueRanked.push(new RankedEntity(newLeagueOfLegends));
+      } else if (queueType === 'RANKED_FLEX_SR') {
+        const newLeagueOfLegends: RankedEntity = element.RankedFlex;
+
+        newLeagueOfLegends.gameName = element.gameName;
+        newLeagueOfLegends.tagLine = element.tagLine;
+        tabLeagueRanked.push(new RankedEntity(newLeagueOfLegends));
+      }
     });
 
     tabLeagueRanked.sort((a, b) => {
