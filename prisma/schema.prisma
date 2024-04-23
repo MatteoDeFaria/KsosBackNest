@@ -21,11 +21,10 @@ model User {
   updateAt  DateTime @updatedAt
 }
 
-
 model LeagueOfLegend {
   id            Int @id @default(autoincrement())
 
-  leagueUser    LeagueUser @relation(fields: [summonerId], references: [id])
+  leagueUser    LeagueUser @relation(fields: [summonerId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   leagueId      String @unique
   queueType     String
   tier          String

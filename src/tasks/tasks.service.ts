@@ -15,6 +15,28 @@ export class TasksService {
 
   private readonly logger = new Logger(TasksService.name);
 
+  async ifUserRankTierUpOrDownDeleteOldTierData(
+    element: Prisma.LeagueUserCreateInput,
+    queueType: string,
+  ) {
+    const findElement = await this.prisma.leagueOfLegend.findMany({
+      where: {
+        queueType: queueType,
+        summonerId: element.id,
+      },
+      orderBy: {
+        updateAt: 'asc',
+      },
+    });
+
+    if (findElement.length > 1)
+      await this.prisma.leagueOfLegend.delete({
+        where: {
+          leagueId: findElement[0].leagueId,
+        },
+      });
+  }
+
   @Cron('0 * * * *')
   async getDataRanked() {
     const users: Prisma.LeagueUserCreateInput[] =
@@ -41,9 +63,13 @@ export class TasksService {
           update: elem,
           where: {
             leagueId: elem.leagueId,
-            queueType: elem.queueType,
           },
         });
+
+        await this.ifUserRankTierUpOrDownDeleteOldTierData(
+          element,
+          elem.queueType,
+        );
       });
     });
 
