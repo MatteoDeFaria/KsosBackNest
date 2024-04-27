@@ -1,6 +1,6 @@
 #!/usr/bin/env/ groovy
 pipeline {
-    agent any
+    agent { node { label 'pi5' } }
 
     environment {
         registryCredential = 'docker-hub-credentials'
@@ -39,8 +39,6 @@ pipeline {
         }
 
         stage('Stop and clean up old latest Docker Image') {
-            agent { node { label 'pi5' } }
-
             steps {
                 script {
                     oldContainerId = sh(script: "docker ps -a -q -f name=$CONTAINER_NAME", returnStdout: true)
@@ -63,8 +61,6 @@ pipeline {
         }
 
         stage('Run Docker Image') {
-            agent { node { label 'pi5' } }
-
             steps {
                 sh "docker run --name $CONTAINER_NAME --restart always --env DATABASE_URL=$DATABASE_URL --env SALT_ROUND=$SALT_ROUND --env RIOT_API_KEY=$RIOT_API_KEY -p 3000:3000 -d $REGISTRY:latest"
             }
