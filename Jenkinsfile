@@ -11,29 +11,29 @@ pipeline {
         RIOT_API_KEY = credentials('riot-api-key')
     }
 
-    stage('Stop and clean up old latest Docker Image') {
-        steps {
-            script {
-                oldContainerId = sh(script: "docker ps -a -q -f name=$CONTAINER_NAME", returnStdout: true)
-                oldImageId = sh(script: "docker images -qf reference=$REGISTRY:latest", returnStdout: true)
+    stages {
+        stage('Stop and clean up old latest Docker Image') {
+            steps {
+                script {
+                    oldContainerId = sh(script: "docker ps -a -q -f name=$CONTAINER_NAME", returnStdout: true)
+                    oldImageId = sh(script: "docker images -qf reference=$REGISTRY:latest", returnStdout: true)
 
-                if (oldContainerId != '') {
-                    sh "docker stop $CONTAINER_NAME"
-                    sh "docker rm $CONTAINER_NAME"
-                } else {
-                    echo "No container to delete..."
-                }
+                    if (oldContainerId != '') {
+                        sh "docker stop $CONTAINER_NAME"
+                        sh "docker rm $CONTAINER_NAME"
+                    } else {
+                        echo "No container to delete..."
+                    }
 
-                if (oldImageId != '') {
-                    sh "docker rmi $registry:latest"
-                } else {
-                    echo "No image to delete..."
+                    if (oldImageId != '') {
+                        sh "docker rmi $registry:latest"
+                    } else {
+                        echo "No image to delete..."
+                    }
                 }
             }
         }
-    }
 
-    stages {
         stage('Build Docker Image') {
             steps {
                 script {
