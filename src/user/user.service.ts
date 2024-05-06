@@ -5,6 +5,7 @@ import { compare, hash } from 'bcrypt';
 import { LoginUserDto } from './dto/login-user.dto';
 import { DeleteUserDto } from './dto/delete-user.dto';
 import { UserEntity } from './entities/user.entity';
+import { PatchUserDto } from './dto/patch-user.dto';
 
 @Injectable()
 export class UserService {
@@ -38,11 +39,9 @@ export class UserService {
     return user.id;
   }
 
-  async deleteUser(data: DeleteUserDto): Promise<UserEntity> {
+  async deleteUser(id: string, data: DeleteUserDto): Promise<UserEntity> {
     const user = await this.prisma.user.findUniqueOrThrow({
-      where: {
-        email: data.email,
-      },
+      where: { id },
     });
 
     if (!user)
@@ -67,6 +66,25 @@ export class UserService {
       where: {
         email: userEmail,
       },
+    });
+
+    return new UserEntity(user);
+  }
+
+  async getUserById(userId: string): Promise<UserEntity> {
+    const user = await this.prisma.user.findUniqueOrThrow({
+      where: {
+        id: userId,
+      },
+    });
+
+    return new UserEntity(user);
+  }
+
+  async updateUser(id: string, data: PatchUserDto): Promise<UserEntity> {
+    const user = await this.prisma.user.update({
+      where: { id },
+      data,
     });
 
     return new UserEntity(user);

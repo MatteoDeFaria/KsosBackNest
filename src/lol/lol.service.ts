@@ -3,7 +3,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { catchError, firstValueFrom } from 'rxjs';
 import { AxiosError } from 'axios';
 import { PrismaService } from 'src/prisma.service';
-import { CreateUserDto } from './dto/create-user.dto';
+import { CreateLeagueUserDto } from './dto/create-user.dto';
 import { LeagueUserEntity } from './entities/league-user.entity';
 import { RankedEntity } from './entities/league-ranked.entity';
 
@@ -36,7 +36,7 @@ export class LolService {
 
   private readonly logger = new Logger(LolService.name);
 
-  async createUser(data: CreateUserDto): Promise<LeagueUserEntity> {
+  async createUser(data: CreateLeagueUserDto): Promise<LeagueUserEntity> {
     const getPuuid = await firstValueFrom(
       this.httpService
         .get(

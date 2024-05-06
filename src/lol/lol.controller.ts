@@ -2,11 +2,17 @@ import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import {
   ApiCreatedResponse,
   ApiOperation,
+  ApiParam,
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
 import { LolService } from './lol.service';
-import { CreateUserDto } from './dto/create-user.dto';
+import { CreateLeagueUserDto } from './dto/create-user.dto';
+
+enum QueueType {
+  SoloQueue = 'RANKED_SOLO_5x5',
+  FlexQueue = 'RANKED_FLEX_SR',
+}
 
 @ApiTags('League of Legends')
 @Controller('lol')
@@ -19,14 +25,15 @@ export class LolController {
   @ApiCreatedResponse({
     description: 'User created',
   })
-  createUser(@Body() createUserDto: CreateUserDto) {
+  createUser(@Body() createUserDto: CreateLeagueUserDto) {
     return this.lolService.createUser(createUserDto);
   }
 
   @Get('/leaderboard/:queueType')
   @ApiOperation({ summary: 'Get lol leaderboard' })
   @ApiResponse({ status: 403, description: 'Forbidden' })
-  getLeaderboard(@Param('queueType') queueType: string) {
+  @ApiParam({ name: 'queueType', enum: QueueType })
+  getLeaderboard(@Param('queueType') queueType: QueueType) {
     return this.lolService.getLeaderboard(queueType);
   }
 }
