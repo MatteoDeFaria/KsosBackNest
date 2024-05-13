@@ -6,6 +6,7 @@ import { PrismaService } from 'src/prisma.service';
 import { CreateLeagueUserDto } from './dto/create-user.dto';
 import { LeagueUserEntity } from './entities/league-user.entity';
 import { RankedEntity } from './entities/league-ranked.entity';
+import { TftRankedEntinty } from './entities/tft-ranked-entity';
 
 enum RANK {
   'IRON',
@@ -184,8 +185,9 @@ export class LolService {
 
     allTFTUser.forEach((element) => {
       if (queueType === 'RANKED_TFT') {
-        const newLeagueOfLegends: RankedEntity = element.RankedTFT;
+        const newLeagueOfLegends: TftRankedEntinty = element.RankedTFT;
 
+        if (!newLeagueOfLegends) return;
         newLeagueOfLegends.gameName = element.gameName;
         newLeagueOfLegends.tagLine = element.tagLine;
         tabLeagueRanked.push(new RankedEntity(newLeagueOfLegends));

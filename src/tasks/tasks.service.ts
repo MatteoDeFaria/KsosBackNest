@@ -64,7 +64,7 @@ export class TasksService {
   @Cron('0 * * * *')
   async getTftDataRanked() {
     const users: Prisma.TFTUserCreateInput[] =
-      await this.prisma.leagueUser.findMany();
+      await this.prisma.tFTUser.findMany();
 
     users.forEach(async (element: Prisma.LeagueUserCreateInput) => {
       const rankedData: Prisma.RankedTFTCreateInput[] = await firstValueFrom(
@@ -81,12 +81,12 @@ export class TasksService {
       ).then((res) => res.data);
 
       rankedData.forEach(async (elem) => {
-        if (elem.queueType === 'RANKED_FLEX')
+        if (elem.queueType === 'RANKED_TFT')
           await this.prisma.rankedTFT.upsert({
             create: elem,
             update: elem,
             where: {
-              summonerId: element.id,
+              puuid: element.puuid,
             },
           });
       });
