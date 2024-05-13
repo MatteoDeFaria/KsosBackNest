@@ -80,3 +80,40 @@ model LeagueUser {
   createdAt DateTime @default(now())
   updateAt  DateTime @updatedAt
 }
+
+model RankedTFT {
+  id Int @id @default(autoincrement())
+
+  leagueUser TFTUser @relation(fields: [summonerId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  summonerId String  @unique
+
+  leagueId     String  @unique
+  queueType    String
+  tier         String
+  rank         String
+  leaguePoints Int
+  wins         Int
+  losses       Int
+  veteran      Boolean
+  inactive     Boolean
+  freshBlood   Boolean
+  hotStreak    Boolean
+
+  createdAt DateTime @default(now())
+  updateAt  DateTime @updatedAt
+}
+
+model TFTUser {
+  id             String          @id @unique
+  accountId      String
+  puuid          String          @unique
+  profileIconId  Int
+  revisionDate   BigInt
+  summonerLevel  BigInt
+  gameName       String
+  tagLine        String
+  RankedTFT      RankedTFT?
+
+  createdAt DateTime @default(now())
+  updateAt  DateTime @updatedAt
+}

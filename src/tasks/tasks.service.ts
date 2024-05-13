@@ -37,7 +37,7 @@ export class TasksService {
   }
 
   @Cron('0 * * * *')
-  async getDataRanked() {
+  async getLolDataRanked() {
     const users: Prisma.LeagueUserCreateInput[] =
       await this.prisma.leagueUser.findMany();
 
@@ -59,5 +59,39 @@ export class TasksService {
     });
 
     this.logger.debug(`Called when the minute is 0`);
+  }
+
+  @Cron('0 * * * *')
+  async getTftDataRanked() {
+    const users: Prisma.TFTUserCreateInput[] =
+      await this.prisma.leagueUser.findMany();
+
+    users.forEach(async (element: Prisma.LeagueUserCreateInput) => {
+      const rankedData: Prisma.RankedTFTCreateInput[] = await firstValueFrom(
+        this.httpService
+          .get(
+            `https://euw1.api.riotgames.com/tft/league/v1/entries/by-summoner/${element.id}?api_key=${process.env.TFT_KEY}`,
+          )
+          .pipe(
+            catchError((error: AxiosError) => {
+              this.logger.error(error.response.data);
+              throw 'An error happened!';
+            }),
+          ),
+      ).then((res) => res.data);
+
+      rankedData.forEach(async (elem) => {
+        if (elem.queueType === 'RANKED_FLEX')
+          await this.prisma.rankedTFT.upsert({
+            create: elem,
+            update: elem,
+            where: {
+              summonerId: element.id,
+            },
+          });
+      });
+    });
+
+    this.logger.debug(`Get TFT Ranked data is called when the minute is 0`);
   }
 }

@@ -9,6 +9,7 @@ pipeline {
         SALT_ROUND = credentials('salt-round')
         DATABASE_URL = credentials('database-url')
         RIOT_API_KEY = credentials('riot-api-key')
+        TFT_KEY = credentials('tft-api-key')
     }
 
     stages {
@@ -61,7 +62,7 @@ pipeline {
 
         stage('Run Docker Image') {
             steps {
-                sh "docker run --name $CONTAINER_NAME --restart always --env DATABASE_URL=$DATABASE_URL --env SALT_ROUND=$SALT_ROUND --env RIOT_API_KEY=$RIOT_API_KEY -p 3000:3000 -d $REGISTRY:latest"
+                sh "docker run --name $CONTAINER_NAME --restart always --env DATABASE_URL=$DATABASE_URL --env SALT_ROUND=$SALT_ROUND --env RIOT_API_KEY=$RIOT_API_KEY --env TFT_KEY=$TFT_KEY -p 3000:3000 -d $REGISTRY:latest"
             }
         }
     }

@@ -12,6 +12,7 @@ import { CreateLeagueUserDto } from './dto/create-user.dto';
 enum QueueType {
   SoloQueue = 'RANKED_SOLO_5x5',
   FlexQueue = 'RANKED_FLEX_SR',
+  TftQueue = 'RANKED_TFT',
 }
 
 @ApiTags('League of Legends')
