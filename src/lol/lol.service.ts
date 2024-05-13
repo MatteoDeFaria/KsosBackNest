@@ -48,7 +48,7 @@ export class LolService {
         .pipe(
           catchError((error: AxiosError) => {
             this.logger.error(error.response.data);
-            throw 'An error happened!';
+            throw 'An error happened to fetch LoL!';
           }),
         ),
     ).then((res) => res.data);
@@ -87,12 +87,12 @@ export class LolService {
     const getUserData = await firstValueFrom(
       this.httpService
         .get(
-          `https://euw1.api.riotgames.com/tft/summoner/v1/summoners/by-puuid/${puuid}?api_key=${process.env.TFT_API_KEY}`,
+          `https://euw1.api.riotgames.com/tft/summoner/v1/summoners/by-puuid/${puuid}?api_key=${process.env.TFT_KEY}`,
         )
         .pipe(
           catchError((error: AxiosError) => {
             this.logger.error(error.response.data);
-            throw 'An error happened!';
+            throw 'An error happened to fetch tft!';
           }),
         ),
     ).then((res) => res.data);
@@ -143,8 +143,8 @@ export class LolService {
       ).then((res) => res.data);
 
       if (element === process.env.RIOT_API_KEY)
-        users.push(await this.createLolUser(data, getPuuid.id));
-      else users.push(await this.createTftUser(data, getPuuid.id));
+        users.push(await this.createLolUser(data, getPuuid.puuid));
+      else users.push(await this.createTftUser(data, getPuuid.puuid));
     });
 
     return users;
