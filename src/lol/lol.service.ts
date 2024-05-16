@@ -171,12 +171,14 @@ export class LolService {
       if (queueType === 'RANKED_SOLO_5x5') {
         const newLeagueOfLegends: RankedEntity = element.RankedSolo;
 
+        if (!newLeagueOfLegends) return;
         newLeagueOfLegends.gameName = element.gameName;
         newLeagueOfLegends.tagLine = element.tagLine;
         tabLeagueRanked.push(new RankedEntity(newLeagueOfLegends));
       } else if (queueType === 'RANKED_FLEX_SR') {
         const newLeagueOfLegends: RankedEntity = element.RankedFlex;
 
+        if (!newLeagueOfLegends) return;
         newLeagueOfLegends.gameName = element.gameName;
         newLeagueOfLegends.tagLine = element.tagLine;
         tabLeagueRanked.push(new RankedEntity(newLeagueOfLegends));
