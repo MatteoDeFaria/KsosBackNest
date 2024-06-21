@@ -25,7 +25,7 @@ export class TasksService {
             summonerId,
           },
         });
-      else
+      else if (element.queueType === 'RANKED_FLEX_SR')
         await this.prisma.rankedFlex.upsert({
           create: element,
           update: element,
