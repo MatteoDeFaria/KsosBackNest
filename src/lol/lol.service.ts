@@ -168,21 +168,18 @@ export class LolService {
     const tabLeagueRanked: RankedEntity[] = [];
 
     allLeagueUser.forEach((element) => {
-      if (queueType === 'RANKED_SOLO_5x5') {
-        const newLeagueOfLegends: RankedEntity = element.RankedSolo;
+      let newLeagueOfLegends: RankedEntity;
 
-        if (!newLeagueOfLegends) return;
-        newLeagueOfLegends.gameName = element.gameName;
-        newLeagueOfLegends.tagLine = element.tagLine;
-        tabLeagueRanked.push(new RankedEntity(newLeagueOfLegends));
-      } else if (queueType === 'RANKED_FLEX_SR') {
-        const newLeagueOfLegends: RankedEntity = element.RankedFlex;
+      if (queueType === 'RANKED_SOLO_5x5')
+        newLeagueOfLegends = element.RankedSolo;
+      else if (queueType === 'RANKED_FLEX_SR')
+        newLeagueOfLegends = element.RankedFlex;
 
-        if (!newLeagueOfLegends) return;
-        newLeagueOfLegends.gameName = element.gameName;
-        newLeagueOfLegends.tagLine = element.tagLine;
-        tabLeagueRanked.push(new RankedEntity(newLeagueOfLegends));
-      }
+      if (!newLeagueOfLegends) return;
+      newLeagueOfLegends.gameName = element.gameName;
+      newLeagueOfLegends.tagLine = element.tagLine;
+      newLeagueOfLegends.profileIconId = element.profileIconId;
+      tabLeagueRanked.push(new RankedEntity(newLeagueOfLegends));
     });
 
     allTFTUser.forEach((element) => {
@@ -192,6 +189,7 @@ export class LolService {
         if (!newLeagueOfLegends) return;
         newLeagueOfLegends.gameName = element.gameName;
         newLeagueOfLegends.tagLine = element.tagLine;
+        newLeagueOfLegends.profileIconId = element.profileIconId;
         tabLeagueRanked.push(new RankedEntity(newLeagueOfLegends));
       }
     });

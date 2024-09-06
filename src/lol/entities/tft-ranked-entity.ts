@@ -15,6 +15,8 @@ export class TftRankedEntinty implements RankedTFT {
   @Exclude()
   summonerId: string;
 
+  profileIconId?: number;
+
   leagueId: string;
 
   queueType: string;
