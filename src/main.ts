@@ -12,11 +12,7 @@ async function bootstrap() {
       crossOriginEmbedderPolicy: false,
       contentSecurityPolicy: {
         directives: {
-          imgSrc: [
-            `'self'`,
-            'data:',
-            'ddragon.leagueoflegends.com',
-          ],
+          imgSrc: [`'self'`, 'data:', 'ddragon.leagueoflegends.com'],
           scriptSrc: [`'self'`, `https: 'unsafe-inline'`],
           manifestSrc: [`'self'`],
           frameSrc: [`'self'`],
