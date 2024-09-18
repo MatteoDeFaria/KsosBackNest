@@ -10,7 +10,10 @@ export class MetricsService {
       name: 'nestjs_ksos_total_requests',
       help: 'Total number of requests to the NestJS app',
     });
-    register.clear()
+    register.clear();
+    register.setDefaultLabels({
+      app: 'nestjs-prometheus',
+    });
     register.registerMetric(requestCounter);
     this.counter.push(requestCounter);
   }
