@@ -8,7 +8,7 @@ export class MetricsController {
   constructor() {}
 
   @Get()
-  getMetrics() {
-    return register.metrics();
+  async getMetrics() {
+    return await register.metrics();
   }
 }
