@@ -13,7 +13,9 @@ export class RequestInterceptor implements NestInterceptor {
   constructor(private metricsService: MetricsService) {}
 
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
-    this.metricsService.incrementCounter();
+    const url = context.switchToHttp().getRequest().url;
+
+    if (url !== '/metrics') this.metricsService.incrementCounter();
     return next.handle();
   }
 }
