@@ -179,6 +179,7 @@ export class LolService {
       newLeagueOfLegends.gameName = element.gameName;
       newLeagueOfLegends.tagLine = element.tagLine;
       newLeagueOfLegends.profileIconId = element.profileIconId;
+      newLeagueOfLegends.puuid = element.puuid;
       tabLeagueRanked.push(new RankedEntity(newLeagueOfLegends));
     });
 
@@ -190,6 +191,7 @@ export class LolService {
         newLeagueOfLegends.gameName = element.gameName;
         newLeagueOfLegends.tagLine = element.tagLine;
         newLeagueOfLegends.profileIconId = element.profileIconId;
+        newLeagueOfLegends.puuid = element.puuid;
         tabLeagueRanked.push(new RankedEntity(newLeagueOfLegends));
       }
     });
