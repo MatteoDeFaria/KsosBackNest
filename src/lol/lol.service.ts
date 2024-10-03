@@ -7,6 +7,7 @@ import { CreateLeagueUserDto } from './dto/create-user.dto';
 import { LeagueUserEntity } from './entities/league-user.entity';
 import { RankedEntity } from './entities/league-ranked.entity';
 import { TftRankedEntinty } from './entities/tft-ranked-entity';
+import { LeagueMatchEntity } from './entities/league-match.entity';
 
 enum RANK {
   'IRON',
@@ -179,7 +180,6 @@ export class LolService {
       newLeagueOfLegends.gameName = element.gameName;
       newLeagueOfLegends.tagLine = element.tagLine;
       newLeagueOfLegends.profileIconId = element.profileIconId;
-      newLeagueOfLegends.puuid = element.puuid;
       tabLeagueRanked.push(new RankedEntity(newLeagueOfLegends));
     });
 
@@ -191,7 +191,6 @@ export class LolService {
         newLeagueOfLegends.gameName = element.gameName;
         newLeagueOfLegends.tagLine = element.tagLine;
         newLeagueOfLegends.profileIconId = element.profileIconId;
-        newLeagueOfLegends.puuid = element.puuid;
         tabLeagueRanked.push(new RankedEntity(newLeagueOfLegends));
       }
     });
@@ -206,5 +205,56 @@ export class LolService {
 
     tabLeagueRanked.reverse();
     return tabLeagueRanked;
+  }
+
+  async getMatches(username: string): Promise<LeagueMatchEntity[]> {
+    const newUsername: string[] = username.split('-');
+    if (newUsername.length <= 1 || newUsername.length >= 3) return null;
+
+    const gameName = newUsername[0];
+    const tagLine = newUsername[1];
+
+    const puuid = await this.prisma.leagueUser.findFirstOrThrow({
+      where: {
+        gameName: gameName,
+        tagLine: tagLine,
+      },
+      select: {
+        puuid: true,
+      },
+    });
+
+    const listMatchesName: string[] = await firstValueFrom(
+      this.httpService
+        .get(
+          `https://europe.api.riotgames.com/lol/match/v5/matches/by-puuid/${puuid.puuid}/ids?start=0&count=10&api_key=${process.env.RIOT_API_KEY}`,
+        )
+        .pipe(
+          catchError((error: AxiosError) => {
+            this.logger.error(error.response.data);
+            throw 'An error happened!';
+          }),
+        ),
+    ).then((res) => res.data);
+
+    const listDataMatches: LeagueMatchEntity[] = [];
+    for (const matchName of listMatchesName) {
+      const dataMatches = await firstValueFrom(
+        this.httpService
+          .get(
+            `https://europe.api.riotgames.com/lol/match/v5/matches/${matchName}?api_key=${process.env.RIOT_API_KEY}`,
+          )
+          .pipe(
+            catchError((error: AxiosError) => {
+              this.logger.error(error.response.data);
+              throw 'An error happened!';
+            }),
+          ),
+      ).then((res) => res.data);
+
+      listDataMatches.push(dataMatches);
+    }
+
+    return listDataMatches;
   }
 }

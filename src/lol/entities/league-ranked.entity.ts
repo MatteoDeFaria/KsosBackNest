@@ -13,8 +13,6 @@ export class RankedEntity implements RankedSolo {
   @Exclude()
   summonerId: string;
 
-  puuid?: string;
-
   profileIconId?: number;
 
   leagueId: string;

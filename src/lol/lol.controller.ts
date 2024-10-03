@@ -37,4 +37,11 @@ export class LolController {
   getLeaderboard(@Param('queueType') queueType: QueueType) {
     return this.lolService.getLeaderboard(queueType);
   }
+
+  @Get('/matches/:username')
+  @ApiOperation({ summary: 'Get lol leaderboard' })
+  @ApiResponse({ status: 403, description: 'Forbidden' })
+  getMatches(@Param('username') username: string) {
+    return this.lolService.getMatches(username);
+  }
 }
