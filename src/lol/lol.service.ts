@@ -1,5 +1,5 @@
 import { HttpService } from '@nestjs/axios';
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { catchError, firstValueFrom } from 'rxjs';
 import { AxiosError } from 'axios';
 import { PrismaService } from 'src/prisma.service';
@@ -214,15 +214,21 @@ export class LolService {
     const gameName = newUsername[0];
     const tagLine = newUsername[1];
 
-    const puuid = await this.prisma.leagueUser.findFirstOrThrow({
-      where: {
-        gameName: gameName,
-        tagLine: tagLine,
-      },
-      select: {
-        puuid: true,
-      },
-    });
+    let puuid: { puuid: string };
+
+    try {
+      puuid = await this.prisma.leagueUser.findFirstOrThrow({
+        where: {
+          gameName: gameName,
+          tagLine: tagLine,
+        },
+        select: {
+          puuid: true,
+        },
+      });
+    } catch (error) {
+      throw new NotFoundException(error.message);
+    }
 
     const listMatchesName: string[] = await firstValueFrom(
       this.httpService
